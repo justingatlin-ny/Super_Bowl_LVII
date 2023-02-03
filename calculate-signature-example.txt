@@ -1,0 +1,11 @@
+POST
+/OffAmazonPayments/2013-01-01?
+/
+AWSAccessKeyId=AKIAI7DFX46CXTQX7N7A&Action=ConfirmOrderReference&AmazonOrderReferenceId=S01-3301005-8674799&OrderReferenceAttributes.OrderTotal.Amount=45&OrderReferenceAttributes.OrderTotal.CurrencyCode=USD&OrderReferenceAttributes.SellerNote=This%20is%20my%20first%20test%20transaction&OrderReferenceAttributes.SellerOrderAttributes.SellerOrderId=rr-sb-1&OrderReferenceAttributes.SellerOrderAttributes.StoreName=Rogers%20Reunion&SellerId=A1D5C1IF1K2L6K&SignatureMethod=HmacSHA256&SignatureVersion=2&Timestamp=2019-11-16T20:38:33.281Z&Host=mws.amazonservices.com&User-Agent=PostmanRuntime/7.19.0
+
+
+
+
+
+
+AWSAccessKeyId=AKIAI7DFX46CXTQX7N7A&Action=ConfirmOrderReference&AmazonOrderReferenceId=S01-3301005-8674799&OrderReferenceAttributes.OrderTotal.Amount=45&OrderReferenceAttributes.OrderTotal.CurrencyCode=USD&OrderReferenceAttributes.SellerNote=This is my first test transaction&OrderReferenceAttributes.SellerOrderAttributes.SellerOrderId=rr-sb-1&OrderReferenceAttributes.SellerOrderAttributes.StoreName=Rogers Reunion&SellerId=A1D5C1IF1K2L6K&SignatureMethod=HmacSHA256&SignatureVersion=2&Timestamp=2019-11-16T20:38:33.281Z&Host=mws.amazonservices.com&User-Agent=PostmanRuntime/7.19.0
