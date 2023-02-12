@@ -62,11 +62,11 @@ const HeadContainer = styled.header`
 `;
 
 const HeadLeft = () => (
-<div className="logo">    
-    <div>Super Bowl LV</div>
-    <div>Kansas City Chiefs vs Tampa Bay Buccaneers</div>
-    <div>Sunday February 7th, 6:30 PM EST</div>
-</div>);
+    <div className="logo">
+        <div>Super Bowl LVII</div>
+        <div>Kansas City Chiefs vs Philadelphia Eagles</div>
+        <div>Sunday, February 12, 2023, 6:30 PM EST</div>
+    </div>);
 
 const Cart = ({ numSquares, total, price, eventHandler, loggedIn, isPortrait }) => {
     return (

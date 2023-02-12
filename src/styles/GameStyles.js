@@ -37,7 +37,7 @@ const getRotation = userId => {
     const min = -20;
     const max = 20;
     let rotation = max + 1;
-    let sign = (Math.round(Math.random() * 10) % 2) ? '-' : '' ;
+    let sign = (Math.round(Math.random() * 10) % 2) ? '-' : '';
     if (!initialsRotation.get(userId)) {
         while (rotation > max || rotation < min) {
             rotation = Math.round(Math.random() * 100);
@@ -110,7 +110,7 @@ export const GameContainer = styled.main.attrs({
         text-align: center;
         padding: 10px 0;
         background-color: orange;
-        color: black;
+        color: red;
     }
     
     .flex-row {
@@ -122,7 +122,7 @@ export const GameContainer = styled.main.attrs({
             vertical-align: middle;
             transform: rotate(-90deg);
             max-width: 3em;
-            color: red;
+            color: green;
             span {
                 text-align: center;
                 white-space: nowrap;
@@ -147,6 +147,7 @@ export const GameContainer = styled.main.attrs({
     }
     .score {
         background-color: #dedede;
+        font-size: larger;
         
     }
     .row.row-0 {
@@ -255,15 +256,15 @@ export const GameSpace = styled.div`
 const GuideStyles = styled.div`
     padding: 25px;
     text-align: center;
-    div:nth-child(2) {
-        font-size: 40px;
-        transform: rotate(115deg);
+    /* div:nth-child(2) { */
+        /* font-size: 40px; */
+        /* transform: rotate(115deg);
         animation-duration: 2s;
         animation-name: orient;
-        animation-iteration-count: infinite;
-    }
+        animation-iteration-count: infinite; */
+    /* } */
 
-    @keyframes orient {
+    /* @keyframes orient {
         from {
             transform: rotate(115deg);
         }
@@ -271,7 +272,7 @@ const GuideStyles = styled.div`
         to {
             transform: rotate(205deg);
         }
-    }
+    } */
 
 
 `;
@@ -279,8 +280,10 @@ const GuideStyles = styled.div`
 export const OrientationGuide = () => {
     return (
         <GuideStyles>
-                <div>Turn your phone to landscape to play.</div>
-                <div>&#x293E;</div>
+            <h3>Oh, no.  Looks like your screen isn't wide enough to show the game.</h3>
+            <h4>Turn your phone to landscape to play.</h4>
+            <h5>Certain apps like snapchat don't recognive screen orientation so open the game in a browser.</h5>
+            <h5>Be sure to open the game in a browser.</h5>
         </GuideStyles>
     );
 }

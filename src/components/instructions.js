@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-const InstructionsContainer = styled.div.attrs(props =>({
+const InstructionsContainer = styled.div.attrs(props => ({
     className: 'instructions'
 }))`
     > div {
@@ -9,6 +9,7 @@ const InstructionsContainer = styled.div.attrs(props =>({
     }
     padding: 10px;
     background-color: #ffc680;
+    text-align: center;
     @media screen and (max-width: 812px) {
         font-size: 14px;
         line-height: 20px;
@@ -18,58 +19,28 @@ const InstructionsContainer = styled.div.attrs(props =>({
         font-size: 10px;
         line-height: 16px;
     }
-    div:after {
-        content: ' -';
-    }
-    ol {
-        display: none;
-    }
-    &[data-open="true"] {
-        ol {
-            display: block;
-        }
-        div:after {
-            content: ' +';
-        }
-    }
     
 `;
 
+const InstControls = styled.div`
+    margin-bottom: ${({ show }) => show ? '10px' : '0'};
+`
+
 let open;
 
-const showContainer = event => {
-    const inst = document.querySelector('.instructions');
-    open = !open;
-    inst.setAttribute('data-open', String(open));
-}
-
-const Instructions = ({ price }) => {
+const Instructions = () => {
+    const ref = useRef(null)
+    const [show, toggleShow] = useState(false)
+    useEffect(() => {
+        ref.current?.addEventListener('contextmenu', (evt) => evt.preventDefault())
+    }, [show])
+    const handleClick = (evt) => {
+        toggleShow(!show)
+    }
     return (
-        <InstructionsContainer onClick={showContainer}>
-            <div className="click-elm">How it works</div>
-            <ol>
-                <li>Log in with your Amazon account to begin playing.</li>
-                <li>You can select up to 4 spaces on the board per transaction.</li>
-                <li>{`Each space costs $${price}`}</li>
-                <li className="margin-top10"><span className="bold">After all of the spaces on the board have been purchased:</span>
-                    <ol>
-                        <li>A team will be added randomly at the top and left side of the game board.</li>
-                        <li>The numbers 0-9 will be added to each space at the top and left side of the game board.</li>
-                        <li><span className="bold">At the end of each quarter:</span>
-                            <ol>
-                                <li>The player who purchased the space corresponding with the winning team's square at the end of each quarter wins $75.</li>
-                            </ol>
-                        </li>
-                    </ol>
-                </li>
-                <li className="margin-top10"><span className="bold">Payout Example:</span>
-                    <ol>
-                        <li>If the Chiefs are listed at the top of the board and at the end of the first quarter the Chiefs lead with a score of 17, the person who purchased the space at row 1 column 7 wins $75.</li>
-                    </ol>
-                </li>
-                
-                
-            </ol>
+        <InstructionsContainer>
+            <InstControls show={show} onClick={handleClick}>{`Click Here to ${show ? 'close' : 'view'} instructional video`}</InstControls>
+            {show ? <video ref={ref} controls controlsList="nodownload noremoteplayback" width="50%" src="/super-bowl-squares-instructions.mp4"><p>Your browser doesn't support html video.</p></video> : null}
         </InstructionsContainer>
     );
 }

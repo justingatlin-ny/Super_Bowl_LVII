@@ -35,78 +35,77 @@ class App extends Component {
       hoverState: { mouseover: new Set(), mouseout: new Set() }
     }
   }
-  
+
   socket = null;
 
-  componentDidMount() {   
+  componentDidMount() {
 
     const startup = () => {
       if (typeof window === 'undefined' || typeof localStorage === 'undefined') return setTimeout(startup, 500);
-      
+
       const isReady = (localStorage.getItem('onAmazonPaymentsReady'));
       if (!isReady) return setTimeout(startup, 500);
-        this.socket = io();
-        const isPortrait = isMobileIsPortrait();
+      this.socket = io();
+      const isPortrait = isMobileIsPortrait();
 
-        const loggedIn = localStorage.getItem('loggedIn') === "true";
-        
-        this.setState({
-          purchasedSquares: localStorage.getItem('initialSquares'),
-          id: localStorage.getItem('id'),
-          loggedIn,
-          isPortrait
-        });
-        
-        if (!loggedIn) {
-          try {
-            window.showButton();
-          } catch(err) {
-            return console.error(err);
-          }
+      const loggedIn = localStorage.getItem('loggedIn') === "true";
+
+      this.setState({
+        purchasedSquares: localStorage.getItem('initialSquares'),
+        id: localStorage.getItem('id'),
+        loggedIn,
+        isPortrait
+      });
+
+      if (!loggedIn) {
+        try {
+          window.showButton();
+        } catch (err) {
+          return console.error(err);
         }
-        
-        this.socket.on('connect', () => {
-          this.state.socketId = this.socket.id;
-        })
+      }
 
-        this.socket.on('squares', (message) => {
-          this.setState({ purchasedSquares: message });
-        });
-        
-        this.socket.on('hover event', (data) => {
-          const { message, game_id } = data;
-          const hoverState = this.state.hoverState;
-          if (message.mouseover) {
-            hoverState.mouseover.add(message.mouseover);
-          }
-          if (message.mouseout) {
-            hoverState.mouseover.delete(message.mouseout);
-          }
-          this.setState({ hoverState });
-        });
+      this.socket.on('connect', () => {
+        this.state.socketId = this.socket.id;
+      })
 
-        const re = /mobile|iphone/i;
-    
-        if (re.test(window.navigator.userAgent)) {
-          let showPaymentModal = this.state.showPaymentModal;
-          window.addEventListener("resize", event => {
-            event.stopPropagation();
-            window.setTimeout(() => {
-              const isPortrait = isMobileIsPortrait();
-              if (isPortrait) {
-                resetBoard();
-                this.handlePriceAndCoords();
-                showPaymentModal = false;
-              }
-              if (/\?test=true/i.test(window.location.search)) {
-                alert(`resize showPaymentModal ${showPaymentModal}`);
-              }
-                this.setState({ isPortrait });
-            }, 10);
-          });
+      this.socket.on('squares', (message) => {
+        this.setState({ purchasedSquares: message });
+      });
+
+      this.socket.on('hover event', (data) => {
+        const { message, game_id } = data;
+        const hoverState = this.state.hoverState;
+        if (message.mouseover) {
+          hoverState.mouseover.add(message.mouseover);
         }
+        if (message.mouseout) {
+          hoverState.mouseover.delete(message.mouseout);
+        }
+        this.setState({ hoverState });
+      });
+
+      const re = /mobile|iphone/i;
+
+      if (re.test(window.navigator.userAgent)) {
+        let showPaymentModal = this.state.showPaymentModal;
+        window.addEventListener("resize", event => {
+          event.stopPropagation();
+          window.setTimeout(() => {
+            const isPortrait = isMobileIsPortrait();
+            if (isPortrait) {
+              resetBoard();
+              this.handlePriceAndCoords();
+              showPaymentModal = false;
+            }
+            if (/\?test=true/i.test(window.location.search)) {
+              alert(`resize showPaymentModal ${showPaymentModal}`);
+            }
+            this.setState({ isPortrait });
+          }, 10);
+        });
+      }
     }
-    // window.setTimeout(handleTeamFade, 500);
     setTimeout(startup, 500);
   }
 
@@ -126,8 +125,8 @@ class App extends Component {
     const orderReferenceId = window.orderReferenceId;
 
     const url = `/merchant/${encodeURIComponent(action)}`;
-    
-    if (!data.coordsList || !data.coordsList.length) 
+
+    if (!data.coordsList || !data.coordsList.length)
       return Promise.reject({ status: 406, data: 'Not acceptable. Please try again.' });
 
     const mergedData = Object.assign({}, data, { orderReferenceId });
@@ -136,9 +135,10 @@ class App extends Component {
       method: 'POST',
       data: mergedData
     })
-      .then(res => { 
+      .then(res => {
         // console.log('transact .then()', res.data);
-        return { status: res.status, data: res.data }})
+        return { status: res.status, data: res.data }
+      })
       .catch(err => {
         // console.log('transact .catch()', err.response || err);
         if (err.response) {
@@ -174,7 +174,7 @@ class App extends Component {
         if (/\?test=true/i.test(window.location.search)) {
           alert(`begin showPaymentModal ${this.state.showPaymentModal}`);
         }
-        this.setState({ showPaymentModal: true });  
+        this.setState({ showPaymentModal: true });
       }
     }
   }
@@ -196,7 +196,7 @@ class App extends Component {
     const name = elm.name;
     switch (type) {
       case "success":
-        this.setState({ 
+        this.setState({
           total: 0,
           selectedCoords: [],
           coords: [],
@@ -205,17 +205,17 @@ class App extends Component {
           processing: null,
           status: undefined,
           data: undefined
-         });
-      break;
+        });
+        break;
       case "mouseover":
         this.socket.emit('hover event', { [type]: elm.getAttribute('id') });
         window.setTimeout(() => {
           this.socket.emit('hover event', { mouseout: elm.getAttribute('id') });
-        },2500);
-      break;
+        }, 2500);
+        break;
       case "mouseout":
         this.socket.emit('hover event', { [type]: elm.getAttribute('id') });
-      break;
+        break;
       case "click":
         switch (name) {
           case "logout":
@@ -226,15 +226,15 @@ class App extends Component {
             }
             break;
           case "close":
-              if (/\?test=true/i.test(window.location.search)) {
-                alert(`close showPaymentModal ${this.state.showPaymentModal}`);
-              }
-              this.setState({ showPaymentModal: null, processing: false, status: null, data: null, disabled: null });
-              const refresh = document.querySelector('[data-refresh="true"]');
-              if (refresh) {
-                window.location.reload();
-              }
-          break;
+            if (/\?test=true/i.test(window.location.search)) {
+              alert(`close showPaymentModal ${this.state.showPaymentModal}`);
+            }
+            this.setState({ showPaymentModal: null, processing: false, status: null, data: null, disabled: null });
+            const refresh = document.querySelector('[data-refresh="true"]');
+            if (refresh) {
+              window.location.reload();
+            }
+            break;
           case "checkout":
             this.begin();
             break;
@@ -253,12 +253,12 @@ class App extends Component {
                 this.setState({ disabled: null, processing: false, status, data });
               });
             break;
-            default:
-              toggleAttr(event, this.state.loggedIn);
-              this.handlePriceAndCoords();
+          default:
+            toggleAttr(event, this.state.loggedIn);
+            this.handlePriceAndCoords();
             break;
         }
-      break;
+        break;
     }
   }
 
@@ -268,8 +268,8 @@ class App extends Component {
         <GlobalStyles />
         <PaymentModal {...this.state} eventHandler={this.eventHandler} isPortrait={this.state.isPortrait} />
         <Header isPortrait={this.state.isPortrait} numSquares={this.state.coords.length} loggedIn={this.state.loggedIn} total={this.state.total} eventHandler={this.eventHandler} price={this.state.price} />
-        {/* <Instructions price={this.state.price} /> */}
         <Payout />
+        <Instructions />
         <Winners />
         <GameContainer {...this.state} eventHandler={this.eventHandler} handlePriceAndCoords={this.handlePriceAndCoords} />
         <Footer />

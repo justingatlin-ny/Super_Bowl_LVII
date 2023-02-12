@@ -38,11 +38,11 @@ const Container = styled.div`
 `;
 
 const quartersMap = new Map();
-// quartersMap.set('Quarter', { score: 'Score', winner: 'Winner'});
-// quartersMap.set('First', { score: '', winner: 'Eric R.'});
-// quartersMap.set('Second', { score: '', winner: 'Racquel J.'})
-// quartersMap.set('Third', { score: '', winner: 'Racquel J.'})
-// quartersMap.set('Fourth', { score: '', winner: 'Pablo A.'})
+quartersMap.set('Quarter', { score: 'Score', winner: 'Winner' });
+quartersMap.set('First', { score: 'TBD', winner: 'TBD' });
+quartersMap.set('Second', { score: 'TBD', winner: 'TBD' })
+quartersMap.set('Third', { score: 'TBD', winner: 'TBD' })
+quartersMap.set('Fourth', { score: 'TBD', winner: 'TBD' })
 
 const Quarters = () => {
     const arr = [];

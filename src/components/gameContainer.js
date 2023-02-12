@@ -1,6 +1,7 @@
 import '@babel/polyfill';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { GameContainer, InformationModal, GameSpace, OrientationGuide, Initials } from '../styles/GameStyles';
+import Instructions from './instructions';
 
 const ExEl = () => <span className="red">&#x2718;</span>;
 const CheckmarkEl = () => <span className="green">&#x2714;</span>;
@@ -14,10 +15,6 @@ const NameEl = ({ text, userId }) => {
         <Initials userId={userId} className="initials">{text}</Initials>
     )
 }
-
-const topSet = new Set([6, 2, 3, 5, 8, 0, 1, 7, 9, 4]); //.values();
-
-const leftSet = new Set([3, 6, 1, 9, 0, 4, 8, 7, 2, 5]); //.values();
 
 const ScoreEl = ({ value }) => {
     return <span>{value}</span>
@@ -89,7 +86,7 @@ const gatherPieces = ({ activeGame, game_id, id, eventHandler, hoverState, selec
 
                 if (space) {
                     initials = itm.initials;
-                    fullname = unescape(itm.fullname);
+                    fullname = decodeURIComponent(itm.fullname);
                 }
                 if (space && (id == itm.id)) {
                     isUsers = true;
@@ -170,72 +167,67 @@ const gatherPieces = ({ activeGame, game_id, id, eventHandler, hoverState, selec
     return board;
 }
 
-const activeGames = process.env.ACTIVE_GAMES.split(',');
-
-let teamList = [
-    "Philadelphia Eagles",
-    "Kansas City Chiefs"
-];
-
-const gameTeams = new Map();
-
-let addTeams = list => {
-    let nArr = [];
-    const oArr = [].concat(list);
-    const oLength = list.length;
-
-    while (nArr.length !== oLength) {
-        const random = Math.round(Math.random() * 10) % 2;
-        const slice = oArr.splice(random, 1);
-        nArr = nArr.concat(slice);
-    }
-    return nArr;
-}
-
-activeGames.forEach(game => {
-    gameTeams.set(game, addTeams(teamList));
-});
-
 const Team = props => {
-    const { game_id, className } = props;
-    const [teamTop, teamLeft] = teamList;
+    const { game_id, className, shuffledTeams } = props;
+    const [teamTop, teamLeft] = shuffledTeams;
     const team = /top/.test(className) ? teamTop : teamLeft;
     return <div className={`${className} team`}><span>{team}</span></div>;
 }
 
+
+const topSet = [9, 2, 1, 4, 7, 6, 0, 5, 3, 8]; //.values();
+const leftSet = [0, 7, 5, 2, 3, 9, 8, 6, 4, 1]
+
+
+function shuffle(array) {
+    let currentIndex = array.length, randomIndex;
+
+    // While there remain elements to shuffle.
+    while (currentIndex != 0) {
+
+        // Pick a remaining element.
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex--;
+
+        // And swap it with the current element.
+        [array[currentIndex], array[randomIndex]] = [
+            array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
+}
+
 const GameBoard = props => {
     const board = gatherPieces(props);
-    const active = true; //(props.activeGame == props.game_id);
+    const active = false; //(props.activeGame == props.game_id);
+    const teams = [
+        "Kansas City Chiefs",
+        "Philadelphia Eagles",
+    ]
+
     return (
         <div className={`game-board game-board-${props.game_id} ${active ? 'active' : 'deactivated'}`}>
             <div className={`game-notice game-notice-${active ? 'active' : 'deactivated'}`}>{active ? 'Active' : 'Closed Game'}</div>
-            <Team className="team-top" game_id={props.game_id} />
+            <Team className="team-top" game_id={props.game_id} shuffledTeams={teams} />
             <div className="flex-row">
-                <Team className="team-left" game_id={props.game_id} />
+                <Team className="team-left" game_id={props.game_id} shuffledTeams={teams} />
                 <div className="game-grid">{board}</div>
             </div>
         </div>
     );
 }
 
-const GameBoardList = props => {
-    const { eventHandler, handlePriceAndCoords, purchasedSquares, id, loggedIn, hoverState, activeGame, coords } = props;
-
-    return activeGames.reduce((acc, game, idx) => {
-        acc.push(<GameBoard activeGame={activeGame} key={`b-${idx}-${Math.round(Math.random() * 100)}`} idx={idx} game_id={game} selectedCoords={coords} hoverState={hoverState} loggedIn={loggedIn} id={id} purchasedSquares={purchasedSquares} eventHandler={eventHandler} handlePriceAndCoords={handlePriceAndCoords} />);
-        return acc;
-    }, []);
-
-}
-
 export default props => {
     const { isPortrait } = props;
     if (isPortrait === undefined) return null;
     if (isPortrait === true) return <OrientationGuide />;
+    const { eventHandler, handlePriceAndCoords, purchasedSquares, id, loggedIn, hoverState, activeGame, coords } = props;
+    const game = 1;
+    const idx = 0;
     return (
         <GameContainer>
             <InformationModal />
-            <GameBoardList {...props} />
+            <GameBoard activeGame={activeGame} key={`b-${idx}-${Math.round(Math.random() * 100)}`} idx={idx} game_id={game} selectedCoords={coords} hoverState={hoverState} loggedIn={loggedIn} id={id} purchasedSquares={purchasedSquares} eventHandler={eventHandler} handlePriceAndCoords={handlePriceAndCoords} />
         </GameContainer>
     );
 };
